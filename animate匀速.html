@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .box {
+            width: 200px;
+            height: 200px;
+            background-color: steelblue;
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box"></div>
+
+    <script>
+        var box = document.querySelector('.box');
+
+        var result = getComputedStyle(box, '::before').content;
+
+        var animate = function(element, options, num, fn) {
+            num = num || 10
+            clearInterval(element.timer);
+            element.timer = setInterval(function () {
+                var flag = true;
+                for (var k in options) {
+                    var attr = k;
+                    var target = options[attr]
+                    var now = parseInt(getStyle(element, attr));
+                    var step = Math.abs(num);
+                    var distance = Math.abs(target - now)
+                    target - now > 0 ? step : -step;
+                    if (distance > step) {
+                        now += step;
+                        element.style[attr] = now + 'px';
+                        flag = false;
+                    }else {
+                        box.style[attr] = target + 'px'
+                    }
+                }
+                if(flag) {
+                    clearInterval(element.timer)
+                    fn && fn()
+                }
+            }, 20)
+        }
+        animate(box, {
+            left: 800,
+            width: 400
+        }, 9 , function (){
+            animate(box , {height: 800})
+        })
+
+        // 获取元素当前生效的样式
+        function getStyle(element, attr) {
+            var result = null;
+            if ('getComputedStyle' in window) {
+                result = window.getComputedStyle(element, null);
+            } else {
+                result = element.currentStyle;
+            }
+            return result[attr];
+        }
+    </script>
+</body>
+
+</html>
