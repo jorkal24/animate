@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .box {
+            width: 200px;
+            height: 200px;
+            background-color: brown;
+            position: absolute;
+            
+        }
+    </style>
+</head>
+
+<body>
+    <button>800</button>
+    <button id="btn1">400</button>
+    <div class="box"></div>
+
+    <script>
+        var btn = document.getElementsByTagName('button')[0];
+        var btn1 = document.getElementById('btn1')
+        var box = document.querySelector('.box');
+
+        
+        btn1.onclick = function (){
+            animation(box , {left: 400 , borderRadius: 200},function (){
+                animation(box , {top: 500})
+            })
+        }
+        btn.onclick = function () {
+            console.log(111);
+            animation(box, {
+                left: 800
+            })
+        }
+
+        function animation(element, option, fn) {
+            clearInterval(element.timer);
+
+            element.timer = setInterval(function () {
+                var flag = true;
+                for (var k in option) {
+                    var attr = k;
+                    var target = option[k];
+                    var now = parseInt(getStyle(element, attr));
+                    var step = (target - now) / 10;
+                    var distance = Math.abs(target - now);
+                    // step = distance > 0 ? step : -step
+                    step = step > 0 ? Math.ceil(step) : Math.floor(step);
+                    if (distance > Math.abs(step)) {
+                        now += step
+                        element.style[attr] = now + 'px';
+                        flag = false;
+                    } else{
+                        element.style[attr] = target + 'px';
+                    }
+                }
+                if(flag){
+                    clearInterval(element.timer);
+                    fn && fn();
+                }
+
+            }, 15)
+
+
+        }
+
+
+
+        function getStyle(element, attr) {
+            var result = null;
+            if ('getComputedStyle' in window) {
+                result = window.getComputedStyle(element, null)
+            } else {
+                result = element.currentStyle
+            }
+            return result[attr]
+        }
+    </script>
+</body>
+
+</html>
